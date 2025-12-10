@@ -1,0 +1,51 @@
+Audio: media/7bf34032-24e4-4adc-8f57-be83c3306aa5.mp3
+ERROR: Error in diarization: An error happened while trying to locate the file on the Hub and we cannot find the requested files in the local cache. Please check your connection and try again or make sure your Internet connection is on.
+Audio: media/b54104af-4b35-47d8-9333-b13fdf762d22.mp3
+ERROR: Error in diarization: Weights only load failed. This file can still be loaded, to do so you have two options, [1mdo those steps only if you trust the source of the checkpoint[0m. 
+	(1) In PyTorch 2.6, we changed the default value of the `weights_only` argument in `torch.load` from `False` to `True`. Re-running `torch.load` with `weights_only` set to `False` will likely succeed, but it can result in arbitrary code execution. Do it only if you got the file from a trusted source.
+	(2) Alternatively, to load with `weights_only=True` please check the recommended steps in the following error message.
+	WeightsUnpickler error: Unsupported global: GLOBAL torch.torch_version.TorchVersion was not an allowed global by default. Please use `torch.serialization.add_safe_globals([torch.torch_version.TorchVersion])` or the `torch.serialization.safe_globals([torch.torch_version.TorchVersion])` context manager to allowlist this global if you trust this class/function.
+
+Check the documentation of torch.load to learn more about types accepted by default with weights_only https://pytorch.org/docs/stable/generated/torch.load.html.
+Audio: media/af165d59-0594-4f07-8b18-02a1ff927375.mp3
+ERROR: Error in diarization: Weights only load failed. This file can still be loaded, to do so you have two options, [1mdo those steps only if you trust the source of the checkpoint[0m. 
+	(1) In PyTorch 2.6, we changed the default value of the `weights_only` argument in `torch.load` from `False` to `True`. Re-running `torch.load` with `weights_only` set to `False` will likely succeed, but it can result in arbitrary code execution. Do it only if you got the file from a trusted source.
+	(2) Alternatively, to load with `weights_only=True` please check the recommended steps in the following error message.
+	WeightsUnpickler error: Unsupported global: GLOBAL torch.torch_version.TorchVersion was not an allowed global by default. Please use `torch.serialization.add_safe_globals([torch.torch_version.TorchVersion])` or the `torch.serialization.safe_globals([torch.torch_version.TorchVersion])` context manager to allowlist this global if you trust this class/function.
+
+Check the documentation of torch.load to learn more about types accepted by default with weights_only https://pytorch.org/docs/stable/generated/torch.load.html.
+Audio: media/66ab2c9c-3981-4a60-906a-6342ac3100f1.mp3
+Segments found: 25
+First segment: {'start': 0.03096875, 'end': 5.43096875, 'speaker': 'SPEAKER_01'}
+Audio: media/11d3bdab-91e5-4d04-8c9e-df4dc6f0c443.mp3
+Segments found: 28
+First segment: {'start': 0.03096875, 'end': 3.37221875, 'speaker': 'SPEAKER_01'}
+Audio: media/4a53d683-8285-4514-81d8-43c7070e41b5.mp3
+Segments found: 38
+First segment: {'start': 0.03096875, 'end': 4.890968750000001, 'speaker': 'SPEAKER_00'}
+Audio: media/c515614b-f7fd-439f-8f25-bad2f7c9381f.mp3
+Segments found: 40
+First segment: {'start': 0.03096875, 'end': 3.37221875, 'speaker': 'SPEAKER_02'}
+Audio: media/ca7a31d5-8c59-4ea4-a201-a18b452ede5c.mp3
+Segments found: 25
+First segment: {'start': 0.03096875, 'end': 5.43096875, 'speaker': 'SPEAKER_01'}
+Audio: media/b2e79593-e505-4c50-87bb-9f897b55ef10.mp3
+Segments found: 10
+First segment: {'start': 0.03096875, 'end': 16.180343750000002, 'speaker': 'SPEAKER_01'}
+Audio: media/ea274970-1884-4ee0-96e3-c44b4cbd8835.mp3
+Segments found: 11
+First segment: {'start': 0.03096875, 'end': 1.9715937500000003, 'speaker': 'SPEAKER_00'}
+Audio: media/070161c3-ee19-4f36-a012-0fba364daa7f.mp3
+Segments found: 38
+First segment: {'start': 0.03096875, 'end': 4.890968750000001, 'speaker': 'SPEAKER_00'}
+Audio: media/3bb531be-572f-4099-9933-64ddcb41c316.mp3
+Segments found: 10
+First segment: {'start': 0.03096875, 'end': 16.180343750000002, 'speaker': 'SPEAKER_01'}
+Audio: media/df7088ef-b462-4466-8db1-d800c7408cc0.mp3
+Segments found: 25
+First segment: {'start': 0.03096875, 'end': 5.43096875, 'speaker': 'SPEAKER_01'}
+Audio: media/74f62e11-e813-4819-b291-4ac8cbd2fc4b.mp3
+Segments found: 11
+First segment: {'start': 0.03096875, 'end': 1.9715937500000003, 'speaker': 'SPEAKER_00'}
+Audio: media/22fe1b81-26d7-42d5-a398-ef693947e452.mp3
+ERROR: Error in diarization: Sizes of tensors must match except in dimension 0. Expected size 160000 but got size 159174 for tensor number 25 in the list.
