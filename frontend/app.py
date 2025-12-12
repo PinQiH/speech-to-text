@@ -41,6 +41,78 @@ def generate_vtt(segments):
         vtt_content += f"{start_str} --> {end_str}\n{text}\n\n"
     return vtt_content
 
+def convert_summary_to_vtt(summary_text):
+    """
+    Converts summary text with timestamps [start -> end] to VTT format.
+    """
+    if not summary_text:
+        return "WEBVTT\n\n"
+        
+    vtt_content = "WEBVTT\n\n"
+    import re
+    
+    # Regex to find timestamps: [0.00s -> 5.00s] or [0.00 -> 5.00]
+    pattern = re.compile(r'\[\s*(\d+\.?\d*)\s*s?\s*->\s*(\d+\.?\d*)\s*s?\s*\]\s*(.*)')
+    
+    lines = summary_text.strip().split('\n')
+    for line in lines:
+        line = line.strip()
+        if not line: continue
+        
+        match = pattern.match(line)
+        if match:
+            start_sec = float(match.group(1))
+            end_sec = float(match.group(2))
+            text = match.group(3).strip()
+            
+            # Format time: HH:MM:SS.mmm
+            def format_time(seconds):
+                hours = int(seconds // 3600)
+                minutes = int((seconds % 3600) // 60)
+                secs = seconds % 60
+                return f"{hours:02}:{minutes:02}:{secs:06.3f}"
+            
+            start_str = format_time(start_sec)
+            end_str = format_time(end_sec)
+            
+            vtt_content += f"{start_str} --> {end_str}\n{text}\n\n"
+        else:
+            # If line doesn't match timestamp format, maybe just append it as a note or skip
+            # For VTT, we need timestamps. If no timestamp, we can't really place it.
+            # But we could append it to the previous cue if we wanted, or just ignore.
+            # Let's try to be safe: if it looks like text, maybe give it a dummy timestamp or skip.
+            # For now, we only convert lines with timestamps.
+            pass
+            
+    return vtt_content
+
+def add_task_to_zip(zip_file, task, folder_prefix=""):
+    """
+    Adds task files to an open ZipFile object.
+    """
+    # 1. Transcription
+    transcription = task.get('corrected_transcription') or task.get('raw_transcription') or ""
+    zip_file.writestr(f"{folder_prefix}transcription.txt", transcription)
+    
+    # 2. Subtitles
+    segs = task.get('corrected_segments') or task.get('raw_segments')
+    subtitles_vtt = generate_vtt(segs)
+    zip_file.writestr(f"{folder_prefix}subtitles.vtt", subtitles_vtt)
+    
+    # 3. Summary
+    summary = task.get('summary') or ""
+    summary_vtt = convert_summary_to_vtt(summary)
+    zip_file.writestr(f"{folder_prefix}summary.vtt", summary_vtt)
+
+def create_task_zip(task):
+    """
+    Creates an in-memory ZIP file for a single task.
+    """
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+        add_task_to_zip(zip_file, task)
+    return zip_buffer.getvalue()
+
 def render_unified_player(audio_url, transcription_corrected, subtitles_corrected, segments_corrected, summary_text):
     # Prepare data for JS
     # Ensure segments is a list
@@ -671,25 +743,32 @@ elif page == "History":
                         # Download Single Selected
                         selected_task_data = next((t for t in tasks if t['id'] == task_id), None)
                         if selected_task_data:
-                            segs = selected_task_data.get('corrected_segments') or selected_task_data.get('raw_segments')
-                            if segs:
-                                vtt_data = generate_vtt(segs)
-                                st.download_button(
-                                    label=f"📥 Download Single",
-                                    data=vtt_data,
-                                    file_name=f"{selected_task_data['id']}_{selected_task_data['filename']}.vtt",
-                                    mime="text/vtt",
-                                    help=f"Download {selected_task_data['id']}_{selected_task_data['filename']}.vtt",
-                                    use_container_width=True
-                                )
+                            zip_data = create_task_zip(selected_task_data)
+                            st.download_button(
+                                label=f"📥 Download Single (.zip)",
+                                data=zip_data,
+                                file_name=f"{selected_task_data['id']}_{selected_task_data['filename']}.zip",
+                                mime="application/zip",
+                                help=f"Download ZIP containing transcription, subtitles, and summary for {selected_task_data['filename']}",
+                                use_container_width=True
+                            )
 
 
                     with btn_col2:
+                        # Prepare ZIP data for ALL tasks
+                        zip_buffer_all = io.BytesIO()
+                        with zipfile.ZipFile(zip_buffer_all, "w", zipfile.ZIP_DEFLATED) as zip_file:
+                            for t in tasks:
+                                # Create a folder name: {id}_{filename}/
+                                folder_name = f"{t['id']}_{t['filename']}/"
+                                add_task_to_zip(zip_file, t, folder_prefix=folder_name)
+                        
                         st.download_button(
                             label="📥 Download All (.zip)",
-                            data=zip_buffer.getvalue(),
-                            file_name="all_subtitles.zip",
+                            data=zip_buffer_all.getvalue(),
+                            file_name="all_tasks_export.zip",
                             mime="application/zip",
+                            help="Download ZIP containing folders for all tasks, each with transcription, subtitles, and summary.",
                             use_container_width=True
                         )
 

@@ -227,7 +227,7 @@ import datetime
 def check_timeout(task, db):
     if task.status in ["transcribing", "correcting", "summarizing"]:
         last_update = task.updated_at or task.created_at
-        if (datetime.datetime.utcnow() - last_update).total_seconds() > 600:
+        if (datetime.datetime.utcnow() - last_update).total_seconds() > 7200:
             task.status = "timeout"
             db.commit()
 
