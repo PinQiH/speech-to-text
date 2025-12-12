@@ -1,4 +1,4 @@
-# Channel Plus AI POC - Whisper & Gemini
+# AI POC - Whisper & Gemini
 
 這是一個使用 Python 構建的 AI 音訊處理概念驗證 (POC) 專案。
 
