@@ -185,13 +185,19 @@ def process_background_task(task_id: int, api_key: str, hf_token: str = None, nu
 async def process_endpoint(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
-    api_key: str = Form(...),
+    api_key: str = Form(None), # Allow None
     hf_token: str = Form(None),
     num_speakers: int = Form(None),
     user_id: str = Form(...), # Changed to str (UUID)
     username: str = Form(None), # Optional username for display
     db: Session = Depends(get_db)
 ):
+    # Use system key if not provided
+    if not api_key:
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+             raise HTTPException(status_code=400, detail="No API Key provided and system key not configured.")
+
     # Generate unique filename
     file_ext = os.path.splitext(file.filename)[1]
     unique_filename = f"{uuid.uuid4()}{file_ext}"
@@ -231,7 +237,6 @@ def check_timeout(task, db):
             task.status = "timeout"
             db.commit()
 
-@app.get("/tasks")
 @app.get("/tasks")
 async def get_tasks(user_id: str, is_admin: bool = False, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     query = db.query(Task)

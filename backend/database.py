@@ -10,12 +10,16 @@ load_dotenv()
 # Construct Supabase Connection String
 # Format: postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres
 # We assume SUPABASE_URL is like https://[PROJECT-REF].supabase.co
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-DB_PASSWORD = os.getenv("DATABASE_PASSWORD")
+# Construct Supabase Connection String
+# Format: postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres
+# We assume SUPABASE_URL is like https://[PROJECT-REF].supabase.co
+# SUPABASE_URL = os.getenv("SUPABASE_URL")
+# DB_PASSWORD = os.getenv("DATABASE_PASSWORD")
 
-if SUPABASE_URL and DB_PASSWORD:
-    project_ref = SUPABASE_URL.split("://")[1].split(".")[0]
-    SQLALCHEMY_DATABASE_URL = f"postgresql://postgres:{DB_PASSWORD}@db.{project_ref}.supabase.co:5432/postgres"
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    SQLALCHEMY_DATABASE_URL = DATABASE_URL
 else:
     # Fallback to local sqlite if env vars missing (for safety)
     SQLALCHEMY_DATABASE_URL = "sqlite:///./tasks.db"

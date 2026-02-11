@@ -389,7 +389,16 @@ if not st.session_state.user:
                 except Exception as e:
                     st.error(f"Connection error: {str(e)}")
     
-                    st.error(f"Connection error: {str(e)}")
+    # Guest Login
+    if st.button("👤 Continue as Guest", use_container_width=True):
+        import uuid
+        st.session_state.user = {
+            "id": str(uuid.uuid4()),
+            "username": "Guest",
+            "email": "guest@example.com",
+            "is_admin": False
+        }
+        st.rerun()
     
     st.divider()
     render_home_page()
@@ -407,7 +416,13 @@ st.sidebar.divider()
 page = st.sidebar.radio("Go to", ["Home", "API Doc", "New Task", "History"])
 
 st.sidebar.header("Configuration")
-api_key = st.sidebar.text_input("Google Gemini API Key", type="password", help="Enter your Google Generative AI API Key here.")
+is_guest = st.session_state.user['username'] == 'Guest'
+api_key_help = "Enter your Google Generative AI API Key here."
+if is_guest:
+    api_key_help += " (Optional for Guest)"
+    st.sidebar.info("ℹ️ You are in Guest Mode. The system API Key will be used if you don't provide one.")
+
+api_key = st.sidebar.text_input("Google Gemini API Key", type="password", help=api_key_help)
 hf_token = st.sidebar.text_input("Hugging Face Token (Optional)", type="password", help="Required for Speaker Diarization (Pyannote).")
 num_speakers_input = st.sidebar.text_input("Number of Speakers (Optional)", value="", help="Leave empty to let the model detect speakers automatically. Enter a number (1-10) to force a specific count.")
 num_speakers = None
@@ -650,7 +665,8 @@ if page == "New Task":
             st.write(f"Selected {len(uploaded_files)} files.")
             
             if st.button("Start Processing"):
-                if not api_key:
+                # Allow empty key if Guest
+                if not api_key and st.session_state.user['username'] != 'Guest':
                     st.error("Please enter your Google Gemini API Key in the sidebar.")
                 else:
                     try:
