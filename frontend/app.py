@@ -618,7 +618,7 @@ if page == "New Task":
                 if current_batch_data:
                     df_batch = pd.DataFrame(current_batch_data)
                     df_batch = df_batch[['filename', 'status']]
-                    list_container.dataframe(df_batch, width="stretch", hide_index=True)
+                    list_container.dataframe(df_batch, use_container_width=True, hide_index=True)
 
                 # 3. Update Detail View (Active Task)
                 if active_task:
@@ -731,7 +731,7 @@ elif page == "History":
                 df = df[cols]
                 
                 # Display list
-                st.dataframe(df, width="stretch", hide_index=True)
+                st.dataframe(df, use_container_width=True, hide_index=True)
                 
                 # Selection & Download
                 col1, col2 = st.columns([1, 1])

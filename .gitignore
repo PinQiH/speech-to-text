@@ -213,3 +213,6 @@ media/
 *.wav
 *.db
 *.sqlite3
+
+.agents
+assests/
